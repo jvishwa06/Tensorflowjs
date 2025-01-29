@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TensorFlow.js Image Classifier</title>
+    <title>Image Classification with TensorFlow.js</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <body>
-        <h1>Image Classification with TensorFlow.js</h1>
-        
-        <input type="file" id="imageUpload">
-        <button onclick="predictImage()">Classify Image</button>
-        
-        <p id="result">Prediction: </p>
-        
-        <canvas id="canvas" width="224" height="224"></canvas>
-    
-        <script src="inference.js"></script>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body>
+    <div class="container">
+        <h1>Image Classification with TensorFlow.js</h1>
+        <input type="file" id="imageUpload" accept="image/*">
+        <br>
+        <img id="previewImage" class="hidden" />
+        <button id="classifyButton">Classify Image</button>
+        <div id="predictions"></div>
+    </div>
+
+    <script src="inference.js"></script>
+</body>
+</html>
