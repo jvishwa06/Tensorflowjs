@@ -1,47 +1,53 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     const imageUpload = document.getElementById("imageUpload");
     const previewImage = document.getElementById("previewImage");
     const classifyButton = document.getElementById("classifyButton");
-    const predictionsDiv = document.getElementById("predictions");
-
+    const predictionsContainer = document.getElementById("predictions");
+    
     let model;
 
-    // Load the MobileNet model
+    // Load TensorFlow.js MobileNet Model
     async function loadModel() {
         model = await mobilenet.load();
-        console.log("Model loaded successfully!");
+        console.log("Model Loaded Successfully!");
     }
+
     loadModel();
 
-    // Handle image upload
     imageUpload.addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 previewImage.src = e.target.result;
-                previewImage.classList.remove("hidden");
+                previewImage.style.display = "block";
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // Classify image
+    // Classify Image
     classifyButton.addEventListener("click", async () => {
         if (!model) {
-            alert("Model is still loading. Please wait.");
+            predictionsContainer.innerHTML = "Loading model, please wait...";
             return;
         }
 
         if (!previewImage.src) {
-            alert("Please upload an image first.");
+            predictionsContainer.innerHTML = "Please select an image first!";
             return;
         }
 
-        const predictions = await model.classify(previewImage);
-        predictionsDiv.innerHTML = "<h2>Predictions:</h2>";
-        predictions.forEach(prediction => {
-            predictionsDiv.innerHTML += `<p>${prediction.className} - ${Math.round(prediction.probability * 100)}%</p>`;
-        });
+        predictionsContainer.innerHTML = '<div id="loader"></div>';
+        document.getElementById("loader").style.display = "block";
+
+        const img = document.getElementById("previewImage");
+        const predictions = await model.classify(img);
+
+        document.getElementById("loader").style.display = "none";
+
+        const topPrediction = predictions[0];
+
+        predictionsContainer.innerHTML = `<p><strong>${topPrediction.className}</strong> - ${Math.round(topPrediction.probability * 100)}%</p>`;
     });
 });
